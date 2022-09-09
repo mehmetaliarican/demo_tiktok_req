@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import "dart:math";
 
 void main() {
   runApp(const MyApp());
@@ -62,12 +63,19 @@ class _MyHomePageState extends State<MyHomePage> {
     'User-Agent':
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36'
   };
-  final Uri uri = Uri.parse('https://m.tiktok.com/api/item/detail/?itemId=7140979180577082629');
+  Uri _getUri(String videoId) {
+    return Uri.parse('https://m.tiktok.com/api/item/detail/?itemId=$videoId');
+  }
+
+  final _random = Random();
+
+  final videos = ["7140979180577082629"];
 
   Future<void> _addVideDetail() async {
     try {
       for (var i = 0; i < 1000; i++) {
-        var response = await widget.client.get(uri, headers: headers);
+        var response = await widget.client
+            .get(_getUri(videos[_random.nextInt(videos.length)]), headers: headers);
 
         final Map<String, dynamic> maps = jsonDecode(response.body);
         if (maps.containsKey('itemInfo')) {
